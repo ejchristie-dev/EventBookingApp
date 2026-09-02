@@ -1,48 +1,271 @@
-{
-  "expo": {
-    "name": "EventBookingApp",
-    "slug": "EventBookingApp",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "eventbookingapp",
-    "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
-      },
-      "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
-    },
-    "web": {
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
-    },
-    "plugins": [
-      "expo-router",
-      [
-        "expo-splash-screen",
-        {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
-          "dark": {
-            "backgroundColor": "#000000"
-          }
-        }
-      ]
-    ],
-    "experiments": {
-      "typedRoutes": true,
-      "reactCompiler": true
-    }
-  }
+{import React, { useState } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  ImageBackground,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+import { StatusBar } from 'expo-status-bar';
+
+export default function App() {
+  const [fullName, setFullName] = useState('');
+  const [eventName, setEventName] = useState('');
+  const [tickets, setTickets] = useState('');
+  const [eventDate, setEventDate] = useState('');
+  const [eventType, setEventType] = useState('Concert');
+  const [showSummary, setShowSummary] = useState(false);
+
+  const handleBooking = () => {
+    setShowSummary(true);
+  };
+
+  return (
+    <ImageBackground
+      source={require('./assets/event-background.jpg')}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <View style={styles.overlay}>
+        <StatusBar style="light" />
+
+        <KeyboardAvoidingView
+          style={styles.container}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+          <ScrollView
+            contentContainerStyle={styles.scrollContainer}
+            showsVerticalScrollIndicator={false}
+          >
+            <View style={styles.card}>
+              <Text style={styles.icon}>🎟️</Text>
+
+              <Text style={styles.title}>Event Booking</Text>
+
+              <Text style={styles.subtitle}>
+                Reserve your place at your next event
+              </Text>
+
+              <Text style={styles.label}>Full Name</Text>
+
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your full name"
+                placeholderTextColor="#777"
+                value={fullName}
+                onChangeText={setFullName}
+              />
+
+              <Text style={styles.label}>Event Name</Text>
+
+              <TextInput
+                style={styles.input}
+                placeholder="Enter the event name"
+                placeholderTextColor="#777"
+                value={eventName}
+                onChangeText={setEventName}
+              />
+
+              <Text style={styles.label}>Number of Tickets</Text>
+
+              <TextInput
+                style={styles.input}
+                placeholder="Enter number of tickets"
+                placeholderTextColor="#777"
+                keyboardType="numeric"
+                value={tickets}
+                onChangeText={setTickets}
+              />
+
+              <Text style={styles.label}>Event Date</Text>
+
+              <TextInput
+                style={styles.input}
+                placeholder="Example: 15 September 2026"
+                placeholderTextColor="#777"
+                value={eventDate}
+                onChangeText={setEventDate}
+              />
+
+              <Text style={styles.label}>Event Type</Text>
+
+              <View style={styles.pickerContainer}>
+                <Picker
+                  selectedValue={eventType}
+                  onValueChange={(itemValue) => setEventType(itemValue)}
+                  style={styles.picker}
+                >
+                  <Picker.Item label="Concert" value="Concert" />
+                  <Picker.Item
+                    label="Sports Event"
+                    value="Sports Event"
+                  />
+                  <Picker.Item label="Workshop" value="Workshop" />
+                </Picker>
+              </View>
+
+              <TouchableOpacity
+                style={styles.button}
+                onPress={handleBooking}
+              >
+                <Text style={styles.buttonText}>Book Event</Text>
+              </TouchableOpacity>
+
+              {showSummary && (
+                <View style={styles.summary}>
+                  <Text style={styles.summaryTitle}>
+                    Booking Summary
+                  </Text>
+
+                  <Text style={styles.summaryText}>
+                    Full Name: {fullName}
+                  </Text>
+
+                  <Text style={styles.summaryText}>
+                    Event Name: {eventName}
+                  </Text>
+
+                  <Text style={styles.summaryText}>
+                    Number of Tickets: {tickets}
+                  </Text>
+
+                  <Text style={styles.summaryText}>
+                    Event Date: {eventDate}
+                  </Text>
+
+                  <Text style={styles.summaryText}>
+                    Event Type: {eventType}
+                  </Text>
+                </View>
+              )}
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </View>
+    </ImageBackground>
+  );
 }
+
+const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
+
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.55)',
+  },
+
+  container: {
+    flex: 1,
+  },
+
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    padding: 20,
+    paddingTop: 60,
+    paddingBottom: 60,
+  },
+
+  card: {
+    backgroundColor: 'rgba(255, 255, 255, 0.94)',
+    borderRadius: 20,
+    padding: 22,
+  },
+
+  icon: {
+    fontSize: 45,
+    textAlign: 'center',
+    marginBottom: 5,
+  },
+
+  title: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#222',
+  },
+
+  subtitle: {
+    fontSize: 15,
+    textAlign: 'center',
+    color: '#666',
+    marginTop: 5,
+    marginBottom: 25,
+  },
+
+  label: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 7,
+    marginTop: 12,
+  },
+
+  input: {
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#cccccc',
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    fontSize: 16,
+    color: '#222',
+  },
+
+  pickerContainer: {
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#cccccc',
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+
+  picker: {
+    width: '100%',
+  },
+
+  button: {
+    backgroundColor: '#4a67d6',
+    paddingVertical: 15,
+    borderRadius: 10,
+    marginTop: 25,
+  },
+
+  buttonText: {
+    color: '#ffffff',
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+
+  summary: {
+    marginTop: 25,
+    backgroundColor: '#f1f3ff',
+    borderRadius: 12,
+    padding: 18,
+    borderWidth: 1,
+    borderColor: '#c6ceff',
+  },
+
+  summaryTitle: {
+    fontSize: 21,
+    fontWeight: 'bold',
+    color: '#222',
+    marginBottom: 12,
+  },
+
+  summaryText: {
+    fontSize: 16,
+    color: '#333',
+    marginBottom: 7,
+  },
+});
